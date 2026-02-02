@@ -6,7 +6,11 @@ const RequestLogSchema = new mongoose.Schema(
     method: { type: String, required: true },
     path: { type: String, required: true },
     userAgent: { type: String },
-    status: { type: Number },
+    status: {
+      type: String,
+      enum: ["Allowed", "Blocked"],
+      required: true,
+    },
     blocked: { type: Boolean, default: false },
     threatScore: { type: Number, default: 0 },
     reason: { type: String },
