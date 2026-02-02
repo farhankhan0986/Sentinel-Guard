@@ -71,13 +71,7 @@ export default function Navbar() {
                 Dashboard
               </Link>
 
-              <Link
-                href="/admin/rules"
-                className={linkClass("/admin/rules")}
-              >
-                Rules
-              </Link>
-
+              
               <button
                 onClick={handleLogout}
                 className="rounded-lg border border-border px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition"
