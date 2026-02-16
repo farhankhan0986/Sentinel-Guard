@@ -42,7 +42,7 @@ export default function Footer() {
             <FooterGroup title="Security">
               <FooterLink>Threat Scoring</FooterLink>
               <FooterLink>IP Blocking</FooterLink>
-              <FooterLink>Audit Logs</FooterLink>
+              {/* <FooterLink>Audit Logs</FooterLink> */}
               <FooterLink>Zero Trust Access</FooterLink>
             </FooterGroup>
 
