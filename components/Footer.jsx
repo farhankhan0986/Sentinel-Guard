@@ -22,7 +22,7 @@ export default function Footer() {
             <p className="text-lg leading-relaxed text-muted">
               Sentinel Guard is a modern, middleware-first API security platform
               built to protect applications from abuse, automated attacks, and
-              unauthorized access — before threats ever reach your backend.
+              unauthorized accesses — before threats ever reach your backend.
             </p>
             <p className="text-sm text-muted">
               Designed for developers who care about security, performance, and
