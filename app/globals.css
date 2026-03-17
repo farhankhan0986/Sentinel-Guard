@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f7f9;
-  --foreground: #111827;
+  --background: #eef2f7;          /* slightly darker than before */
+  --foreground: #0f172a;          /* deeper text */
   --card: #ffffff;
-  --border: #e5e7eb;
-  --muted: #6b7280;
-  --accent: #1f2937;
-  --radius: 16px;
+  --border: #d9e0e7;
+  --muted: #64748b;
+  --accent: #0ea5e9;              /* security blue */
+  --accent-soft: #e0f2fe;
+  --danger: #ef4444;              /* threat red */
+  --radius: 18px;
 }
 
 @theme inline {
@@ -17,7 +19,7 @@
   --color-border: var(--border);
   --color-card: var(--card);
   --color-accent: var(--accent);
-  --font-sans: "Segoe UI", "Aptos", system-ui, sans-serif;
+  --font-sans: "Segoe UI", system-ui, sans-serif;
 }
 
 * {
@@ -30,7 +32,7 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--background);
+  background: linear-gradient(180deg, #eef2f7 0%, #e6ecf3 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   line-height: 1.6;
@@ -38,11 +40,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* selection */
 ::selection {
-  background: #e5e7eb;
+  background: #dbeafe;
   color: var(--foreground);
 }
 
+/* inputs */
 input,
 select,
 textarea,
@@ -50,25 +54,47 @@ button {
   font: inherit;
 }
 
+/* glass effect (subtle, not SaaS heavy) */
 .glass-panel {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
 }
 
+/* cards */
 .mesh-card {
-  background: #ffffff;
+  background: linear-gradient(135deg, #ffffff, #f1f5f9);
   border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
 }
 
+/* pills */
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   border-radius: 999px;
   padding: 0.35rem 0.8rem;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+}
+
+/* security highlights */
+.pill-threat {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.pill-safe {
+  background: #ecfeff;
+  color: #0891b2;
+}
+
+/* subtle glow for security UI */
+.security-glow {
+  box-shadow: 
+    0 0 0 1px rgba(14,165,233,0.15),
+    0 0 40px rgba(14,165,233,0.12);
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShieldCheck, Globe, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Navbar() {
   const [admin, setAdmin] = useState(null);
@@ -47,43 +48,66 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/92 backdrop-blur">
+    <nav className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+      {/* subtle top glow */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-3 text-slate-900">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
-            <ShieldCheck className="h-5 w-5" />
+        {/* LOGO */}
+
+        <Link href="/" className="flex items-center gap-3 group">
+          {/* LOGO */}
+          <div className="relative group flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f172a] shadow-sm">
+            <Image
+              src="/favicon.svg"
+              alt="Sentinel Guard"
+              width={32}
+              height={32}
+              className="relative z-10 group-hover:-translate-z-1 group-hover:scale-110 duration-300 transition-transform"
+            />
+
+            {/* subtle glow */}
+            {/* <div className="absolute inset-0 rounded-xl bg-sky-400/20 blur-md opacity-0 group-hover:opacity-100 transition" /> */}
           </div>
-          <div>
-            <p className="text-lg font-semibold tracking-tight">Sentinel Guard</p>
-            <p className="text-xs text-slate-500">Website traffic protection</p>
-          </div>
+
+          {/* TEXT */}
+          <span className="hidden sm:inline-block text-lg font-semibold tracking-tight text-slate-800">
+            Sentinel Guard
+          </span>
         </Link>
 
+        {/* RIGHT */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/#features"
-            className="hidden rounded-full px-4 py-2 text-sm text-slate-600 transition hover:bg-slate-100 sm:inline-flex"
-          >
-            Features
-          </Link>
-
           {admin ? (
             <>
-              <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 md:flex">
-                <Globe className="h-4 w-4 text-slate-500" />
-                <span>{admin.tenant?.website || admin.tenant?.name || "Your website"}</span>
+              {/* WEBSITE STATUS */}
+              <div className="hidden md:flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs">
+                <span className="flex items-center gap-2 text-green-600">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  Active
+                </span>
+
+                <span className="text-slate-400">|</span>
+
+                <span className="flex items-center gap-2 text-slate-600">
+                  <Globe className="h-4 w-4" />
+                  {admin.tenant?.website || admin.tenant?.name || "Your site"}
+                </span>
               </div>
 
+              {/* DASHBOARD */}
               <Link
                 href="/admin/dashboard"
-                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
               </Link>
+
+              {/* LOGOUT */}
               <button
                 onClick={handleLogout}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50"
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition"
               >
                 Logout
               </button>
@@ -92,15 +116,16 @@ export default function Navbar() {
             <>
               <Link
                 href="/admin/login"
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
               >
                 Login
               </Link>
+
               <Link
                 href="/admin/signup"
-                className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="rounded-full bg-sky-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-sky-500 transition shadow-sm"
               >
-                Sign Up
+                Get Started
               </Link>
             </>
           )}

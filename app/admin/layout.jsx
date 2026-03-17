@@ -35,18 +35,23 @@ export default function AdminLayout({ children }) {
     setChecked(false);
     checkAuth();
   }, [isPublicAuthPage, router]);
-
-  if (!checked) {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-slate-500">
-        Checking your session...
-      </div>
-    );
+  if (isPublicAuthPage) {
+    return <div className="min-h-screen bg-[#020617]">{children}</div>;
   }
+
+  // if (!checked) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center text-sm text-slate-500">
+  //       Checking your session...
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-transparent text-foreground">
-      <div className="mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6">{children}</div>
+      <div className="mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6">
+        {children}
+      </div>
     </div>
   );
 }

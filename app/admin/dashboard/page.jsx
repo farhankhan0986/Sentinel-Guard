@@ -219,191 +219,372 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="px-4 py-12 text-sm text-slate-500">Loading dashboard...</div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
-      <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="space-y-8 animate-pulse">
+
+      {/* HEADER */}
+      <section className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8">
         <div className="grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
-              Website dashboard
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
-              View request activity, blocked traffic, and suspicious behavior for
-              your website in one place.
-            </p>
+
+          <div className="space-y-3">
+            <div className="h-8 w-64 bg-slate-200 rounded-lg" />
+            <div className="h-4 w-96 bg-slate-200 rounded" />
+            <div className="h-4 w-80 bg-slate-200 rounded" />
           </div>
 
           <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-700">
-                <Globe className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-slate-900">
-                  {tenant?.name || admin?.name}
-                </p>
-                <p className="text-sm text-slate-500">
-                  {tenant?.website || "Website not set"}
-                </p>
-                <p className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">
-                  Status: {tenant?.status || "active"}
-                </p>
+              <div className="h-10 w-10 rounded-xl bg-slate-200" />
+              <div className="space-y-2 w-full">
+                <div className="h-4 w-40 bg-slate-200 rounded" />
+                <div className="h-3 w-32 bg-slate-200 rounded" />
+                <div className="h-3 w-24 bg-slate-200 rounded" />
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
+      {/* KPI CARDS */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <Kpi title="Total Requests" value={stats.total} icon={<Activity />} />
-        <Kpi title="Allowed" value={stats.allowed} icon={<ShieldAlert />} />
-        <Kpi title="Blocked" value={stats.blocked} icon={<Ban />} />
-        <Kpi title="Active Threats" value={stats.activeThreats} icon={<Radar />} />
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={i}
+            className="rounded-[20px] border border-slate-200 bg-white p-5 space-y-4"
+          >
+            <div className="h-5 w-32 bg-slate-200 rounded" />
+            <div className="h-8 w-20 bg-slate-200 rounded" />
+          </div>
+        ))}
       </div>
+
+      {/* CHARTS */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.15fr,0.85fr]">
+
+        {/* LINE CHART */}
+        <div className="rounded-[24px] border border-slate-200 bg-white p-6 space-y-4">
+          <div className="h-5 w-48 bg-slate-200 rounded" />
+          <div className="h-4 w-64 bg-slate-200 rounded" />
+          <div className="h-72 w-full bg-slate-200 rounded-xl" />
+        </div>
+
+        {/* PIE CHART */}
+        <div className="rounded-[24px] border border-slate-200 bg-white p-6 space-y-4">
+          <div className="h-5 w-48 bg-slate-200 rounded" />
+          <div className="h-4 w-64 bg-slate-200 rounded" />
+          <div className="h-64 w-full bg-slate-200 rounded-xl" />
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+  return (
+    <div className="space-y-8">
+      <section className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+
+  <div className="grid gap-8 lg:grid-cols-[1.1fr,0.9fr] items-center">
+
+    {/* LEFT */}
+    <div className="space-y-4">
+
+      <div className="pill bg-sky-100 text-sky-700 w-fit">
+        Dashboard Overview
+      </div>
+
+      <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+        Website dashboard
+      </h1>
+
+      <p className="max-w-lg text-sm leading-7 text-slate-600">
+        Monitor incoming requests, detect suspicious activity, and track
+        blocked traffic in real-time.
+      </p>
+
+    </div>
+
+    {/* RIGHT (UPGRADED CARD) */}
+    <div className="relative rounded-[24px] border border-slate-200 bg-slate-50 p-5">
+
+      {/* subtle glow */}
+      <div className="absolute inset-0 rounded-[24px] bg-sky-100/20 blur-xl opacity-40 pointer-events-none" />
+
+      <div className="relative flex items-start gap-4">
+
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-slate-700 shadow-sm">
+          <Globe className="h-5 w-5" />
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-slate-900">
+            {tenant?.name || admin?.name}
+          </p>
+
+          <p className="text-sm text-slate-500">
+            {tenant?.website || "Website not set"}
+          </p>
+
+          <div className="flex items-center gap-2 pt-2">
+            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-xs uppercase tracking-[0.16em] text-slate-500">
+              {tenant?.status || "active"}
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+
+  <Kpi
+    title="Total Requests"
+    value={stats.total}
+    icon={<Activity />}
+    tone="neutral"
+  />
+
+  <Kpi
+    title="Allowed Traffic"
+    value={stats.allowed}
+    icon={<ShieldAlert />}
+    tone="safe"
+  />
+
+  <Kpi
+    title="Blocked Requests"
+    value={stats.blocked}
+    icon={<Ban />}
+    tone="danger"
+  />
+
+  <Kpi
+    title="Active Threats"
+    value={stats.activeThreats}
+    icon={<Radar />}
+    tone="warning"
+  />
+
+</div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.15fr,0.85fr]">
-        <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Requests over time
-            </h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Traffic coming to your website over time.
-            </p>
 
-            <div className="mt-5 h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={traffic}>
-                  <XAxis dataKey="_id" tickLine={false} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#0f172a"
-                    strokeWidth={2.5}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+  {/* LINE CHART */}
+  <Card className="rounded-[24px] border border-slate-200 bg-white shadow-sm relative overflow-hidden">
+    <CardContent className="p-6">
 
-        <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Allowed vs blocked
-            </h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Simple view of traffic decisions made by Sentinel Guard.
-            </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-950">
+            Requests over time
+          </h3>
+          <p className="mt-1 text-sm text-slate-500">
+            Live traffic flow hitting your system.
+          </p>
+        </div>
 
-            <div className="mt-5 h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={blocks}
-                    dataKey="count"
-                    nameKey="label"
-                    outerRadius={92}
-                    innerRadius={56}
-                  >
-                    {blocks.map((entry, index) => (
-                      <Cell
-                        key={entry._id || index}
-                        fill={blockColors[index % blockColors.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        {/* live indicator */}
+        <span className="flex items-center gap-2 text-xs text-green-600">
+          <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          Live
+        </span>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr,0.85fr]">
-        <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-slate-950">
-              Recent requests
-            </h3>
-            <p className="mt-1 text-sm text-slate-500">
-              Latest request logs captured for your website.
-            </p>
+      <div className="mt-6 h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={traffic}>
+            <XAxis dataKey="_id" tickLine={false} axisLine={false} />
+            <YAxis tickLine={false} axisLine={false} />
+            <Tooltip />
 
-            <div className="mt-5 overflow-x-auto">
-              <table className="w-full min-w-175 text-sm">
-                <thead className="text-left text-slate-500 uppercase">
-                  <tr>
-                    <th className="pb-3 whitespace-nowrap font-medium">IP</th>
-                    <th className="pb-3 font-medium">Path</th>
-                    <th className="pb-3 font-medium">Method</th>
-                    <th className="pb-3 font-medium">Status</th>
-                    <th className="pb-3 font-medium">Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentLogs.map((log) => (
-                    <tr key={log._id} className="border-t border-slate-100">
-                      <td className="py-3 font-mono whitespace-nowrap text-slate-700">{log.ip}</td>
-                      <td className="py-3 text-slate-700">{log.path}</td>
-                      <td className="py-3 text-slate-700">{log.method}</td>
-                      <td className="py-3">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            log.status === "Blocked"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-emerald-100 text-emerald-700"
-                          }`}
-                        >
-                          {log.status}
-                        </span>
-                      </td>
-                      <td className="py-3 text-slate-500">
-                        {new Date(log.createdAt).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="#0ea5e9"   // changed → security blue
+              strokeWidth={2.5}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+    </CardContent>
+  </Card>
+
+  {/* PIE CHART */}
+  <Card className="rounded-[24px] border border-slate-200 bg-white shadow-sm">
+    <CardContent className="p-6">
+
+      <h3 className="text-lg font-semibold text-slate-950">
+        Allowed vs Blocked
+      </h3>
+
+      <p className="mt-1 text-sm text-slate-500">
+        Decision breakdown by security rules.
+      </p>
+
+      <div className="mt-6 h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={blocks}
+              dataKey="count"
+              nameKey="label"
+              outerRadius={92}
+              innerRadius={56}
+            >
+              {blocks.map((entry, index) => (
+                <Cell
+                  key={entry._id || index}
+                  fill={
+                    index === 0
+                      ? "#10b981" // allowed → green
+                      : "#ef4444" // blocked → red
+                  }
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+    </CardContent>
+  </Card>
+
+</div>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr,0.85fr]">
+        <Card className="rounded-[24px] border border-slate-200 bg-white shadow-sm overflow-hidden">
+  <CardContent className="p-6">
+
+    <div className="flex items-center justify-between">
+      <div>
+        <h3 className="text-lg font-semibold text-slate-950">
+          Recent requests
+        </h3>
+        <p className="mt-1 text-sm text-slate-500">
+          Live traffic logs captured by Sentinel Guard.
+        </p>
+      </div>
+
+      {/* live badge */}
+      <span className="flex items-center gap-2 text-xs text-green-600">
+        <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+        Live
+      </span>
+    </div>
+
+    <div className="mt-6 overflow-x-auto">
+      <table className="w-full min-w-[700px] text-sm">
+
+        <thead className="text-left text-xs uppercase tracking-wider text-slate-400">
+          <tr>
+            <th className="pb-3">IP</th>
+            <th className="pb-3">Path</th>
+            <th className="pb-3">Method</th>
+            <th className="pb-3">Decision</th>
+            <th className="pb-3">Time</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {recentLogs.map((log) => (
+            <tr
+              key={log._id}
+              className="border-t border-slate-100 hover:bg-slate-50 transition"
+            >
+              <td className="py-3 font-mono text-slate-700 whitespace-nowrap">
+                {log.ip}
+              </td>
+
+              <td className="py-3 text-slate-700 max-w-[180px] truncate">
+                {log.path}
+              </td>
+
+              <td className="py-3">
+                <span className="px-2 py-1 rounded-md bg-slate-100 text-xs font-medium">
+                  {log.method}
+                </span>
+              </td>
+
+              <td className="py-3">
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
+                    log.status === "Blocked"
+                      ? "bg-red-100 text-red-600"
+                      : "bg-emerald-100 text-emerald-600"
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      log.status === "Blocked"
+                        ? "bg-red-500"
+                        : "bg-emerald-500"
+                    }`}
+                  />
+                  {log.status}
+                </span>
+              </td>
+
+              <td className="py-3 text-slate-500 text-xs">
+                {new Date(log.createdAt).toLocaleTimeString()}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+    </div>
+
+  </CardContent>
+</Card>
 
         <div className="space-y-6">
-          <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-slate-950">
-                Top blocked IPs
-              </h3>
-              <p className="mt-1 text-sm text-slate-500">
-                IP addresses with the most blocked requests.
-              </p>
+          <Card className="rounded-[24px] border border-slate-200 bg-white shadow-sm">
+  <CardContent className="p-6">
 
-              {topIps.length === 0 ? (
-                <p className="mt-5 text-sm text-slate-500">
-                  No blocked IPs yet.
-                </p>
-              ) : (
-                <ul className="mt-5 divide-y divide-slate-100">
-                  {topIps.map((ip) => (
-                    <li key={ip._id} className="flex justify-between py-3 text-sm">
-                      <span className="font-mono text-slate-600">{ip._id}</span>
-                      <span className="font-semibold text-slate-900">{ip.count}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
+    <h3 className="text-lg font-semibold text-slate-950">
+      Top blocked IPs
+    </h3>
+
+    <p className="mt-1 text-sm text-slate-500">
+      Sources generating the most malicious traffic.
+    </p>
+
+    {topIps.length === 0 ? (
+      <p className="mt-5 text-sm text-slate-500">
+        No threats detected yet.
+      </p>
+    ) : (
+      <ul className="mt-5 space-y-3">
+        {topIps.map((ip, i) => (
+          <li
+            key={ip._id}
+            className="flex items-center justify-between rounded-xl border border-slate-100 px-3 py-2"
+          >
+            <span className="font-mono text-slate-600 text-sm">
+              {ip._id}
+            </span>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500">blocked</span>
+              <span className="font-semibold text-red-600">
+                {ip.count}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+
+  </CardContent>
+</Card>
 
           <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
             <CardContent className="space-y-5 p-6">
@@ -418,7 +599,7 @@ export default function AdminDashboard() {
                 </div>
                 <button
                   onClick={loadDashboard}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-sky-600 px-4 py-3 text-sm font-medium text-white hover:bg-sky-500 transition"
                 >
                   <RefreshCcw className="h-4 w-4" />
                   Refresh
@@ -440,7 +621,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={runSingleTraffic}
                   disabled={trafficLoading}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-2xl cursor-pointer bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
                 >
                   <Play className="h-4 w-4" />
                   Send Test Request
@@ -448,21 +629,21 @@ export default function AdminDashboard() {
                 <button
                   onClick={runAttackTraffic}
                   disabled={trafficLoading}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
-                >
+                 className="inline-flex items-center gap-2 rounded-2xl cursor-pointer bg-red-600 px-4 py-3 text-sm font-medium text-white hover:bg-red-500 transition"
+                > 
                   <Zap className="h-4 w-4" />
                   Simulate Attack
                 </button>
                 <button
                   onClick={rotateKey}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-100/20 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-200 cursor-pointer transition"
                 >
                   <KeyRound className="h-4 w-4" />
                   New Key
                 </button>
               </div>
 
-              <div className="rounded-2xl bg-slate-900 px-4 py-3 font-mono text-xs text-slate-100">
+              <div className="rounded-2xl bg-slate-950 px-4 py-3 font-mono text-xs text-green-400 border border-slate-800">
                 {trafficMessage ||
                   apiKeyMessage ||
                   "Use these buttons to generate demo traffic quickly."}
@@ -475,20 +656,48 @@ export default function AdminDashboard() {
   );
 }
 
-function Kpi({ title, value, icon }) {
+function Kpi({ title, value, icon, tone = "neutral" }) {
+  const styles = {
+    neutral: "bg-slate-100 text-slate-700",
+    safe: "bg-emerald-100 text-emerald-700",
+    danger: "bg-red-100 text-red-600",
+    warning: "bg-amber-100 text-amber-700",
+  };
+
   return (
-    <Card className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+    <div className="group relative rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+
+      {/* subtle glow */}
+      <div className="absolute inset-0 rounded-[20px] opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-sky-100/40 to-indigo-100/40" />
+
+      <div className="relative space-y-3">
+
+        <div className={`h-11 w-11 flex items-center justify-center rounded-xl ${styles[tone]}`}>
           {icon}
         </div>
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
-            {title}
-          </p>
-          <p className="mt-1 text-2xl font-semibold text-slate-950">{value}</p>
+
+        <p className="text-sm text-slate-500">{title}</p>
+
+        <div className="flex items-end justify-between">
+          <h3 className="text-2xl font-semibold text-slate-900">
+            {value ?? 0}
+          </h3>
+
+          {/* mini status dot */}
+          {tone !== "neutral" && (
+            <span
+              className={`h-2 w-2 rounded-full ${
+                tone === "danger"
+                  ? "bg-red-500"
+                  : tone === "safe"
+                  ? "bg-emerald-500"
+                  : "bg-amber-500"
+              }`}
+            />
+          )}
         </div>
-      </CardContent>
-    </Card>
+
+      </div>
+    </div>
   );
 }

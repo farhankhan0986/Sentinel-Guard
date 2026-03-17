@@ -5,6 +5,9 @@ import Footer from "@/components/Footer";
 export const metadata = {
   title: "Sentinel Guard",
   description: "Sentinel Guard - Website security monitoring dashboard",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {

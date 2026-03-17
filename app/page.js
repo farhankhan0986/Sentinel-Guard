@@ -1,116 +1,153 @@
+/* ===== HOME PAGE ===== */
+
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, Activity, Ban, KeyRound, Globe, Radar } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  ShieldCheck,
+  Activity,
+  Ban,
+  KeyRound,
+  Globe,
+  Radar,
+  AlertTriangle,
+} from "lucide-react";
+import { motion } from "framer-motion";
 
-const features = [
-  {
-    icon: <ShieldCheck className="h-5 w-5" />,
-    title: "Protect your website traffic",
-    desc: "Sentinel Guard checks incoming requests before they reach your application.",
-  },
-  {
-    icon: <Ban className="h-5 w-5" />,
-    title: "Block suspicious requests",
-    desc: "Track abusive traffic and see which requests were blocked by your rules.",
-  },
-  {
-    icon: <Activity className="h-5 w-5" />,
-    title: "View activity clearly",
-    desc: "Use a simple dashboard to monitor request trends, logs, and threat signals.",
-  },
+const threats = [
+  "SQL Injection Attempts",
+  "Bot Traffic Flood",
+  "Brute Force Logins",
+  "Suspicious IP Activity",
 ];
 
 export default function Home() {
   return (
     <main className="text-slate-900">
-      <section className="px-6 py-20">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr,0.9fr] lg:items-center">
-          <div className="space-y-7">
-            <span className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-slate-100">
-              Simple, professional website security
+      {/* HERO */}
+      <section className="relative px-6 py-24 overflow-hidden">
+        <div className="absolute inset-0 opacity-20 blur-3xl bg-gradient-to-r from-sky-400 to-indigo-500" />
+
+        <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 items-center">
+          <div className="space-y-8">
+            <span className="pill bg-sky-100 text-sky-700">
+              Security Middleware • Real-time Protection
             </span>
 
-            <div className="space-y-5">
-              <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-                Watch your website traffic and stop suspicious requests early.
-              </h1>
-              <p className="max-w-2xl text-lg leading-8 text-slate-600">
-                Sign up, add your website, get your API key, and monitor blocked
-                traffic, request history, and suspicious activity from one clean
-                dashboard.
-              </p>
-            </div>
+            <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-tight">
+              Detect, analyze and block malicious traffic before it hits your
+              backend.
+            </h1>
 
-            <div className="flex flex-wrap gap-4">
+            <p className="text-lg text-slate-600 max-w-xl">
+              Sentinel Guard acts as a protective layer for your APIs —
+              filtering harmful requests, tracking behavior patterns, and giving
+              you full visibility.
+            </p>
+
+            <div className="flex gap-4">
               <Link
                 href="/admin/signup"
-                className="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="px-6 py-3 rounded-full bg-sky-600 text-white hover:bg-sky-500 duration-500 transition-all hover:scale-102"
               >
-                Create Account
+                Get Started
               </Link>
               <Link
                 href="/admin/login"
-                className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="px-6 py-3 rounded-full bg-white/30 hover:bg-white/50 duration-500 transition-all hover:scale-102"
               >
                 Login
               </Link>
             </div>
+
+            {/* Threat ticker */}
+            <div className="flex flex-wrap gap-3 pt-4">
+              {threats.map((t, i) => (
+                <motion.div
+                  key={t}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.15 }}
+                  className="pill bg-red-50 text-red-600"
+                >
+                  <AlertTriangle className="h-4 w-4" /> {t}
+                </motion.div>
+              ))}
+            </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="space-y-5 rounded-[24px] border border-slate-200 bg-slate-50 p-6">
-              <div className="flex items-center justify-between">
+          {/* DASHBOARD MOCK */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="rounded-[28px] p-6 glass-panel security-glow"
+          >
+            <div className="space-y-5 rounded-[24px] bg-white/80 p-6">
+              <div className="flex justify-between">
                 <div>
-                  <p className="text-sm text-slate-500">Dashboard Preview</p>
-                  <h3 className="mt-1 text-2xl font-semibold text-slate-950">
-                    Website Security Overview
-                  </h3>
+                  <p className="text-sm text-slate-500">Live Monitoring</p>
+                  <h3 className="text-2xl font-semibold">Traffic Overview</h3>
                 </div>
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
-                  Active
+                <span className="pill bg-green-100 text-green-700">
+                  Protected
                 </span>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <PreviewStat icon={<Globe className="h-5 w-5" />} label="Website" value="myapp.com" />
-                <PreviewStat icon={<KeyRound className="h-5 w-5" />} label="API Key" value="Connected" />
-                <PreviewStat icon={<Activity className="h-5 w-5" />} label="Requests" value="12,430" />
-                <PreviewStat icon={<Radar className="h-5 w-5" />} label="Threats" value="14" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Stat icon={<Globe />} label="Domain" value="api.myapp.com" />
+                <Stat icon={<KeyRound />} label="Auth" value="Verified" />
+                <Stat icon={<Activity />} label="Requests" value="18,920" />
+                <Stat icon={<Radar />} label="Threats Blocked" value="32" />
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      <section id="features" className="px-6 pb-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-10 max-w-3xl">
-            <h2 className="text-3xl font-semibold tracking-tight text-slate-950">
-              Everything is kept simple and easy to explain.
+      {/* FEATURES */}
+      <section className="relative px-6 pb-28 mt-10">
+        {/* subtle background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-100/60 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* HEADER */}
+          <div className="max-w-3xl mb-14 space-y-4">
+            <div className="pill bg-sky-100 text-sky-700 w-fit">
+              Security Capabilities
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900">
+              Built for real-world attack scenarios
             </h2>
-            <p className="mt-3 text-base leading-7 text-slate-600">
-              Sentinel Guard focuses on the basics that matter: identify your
-              website, inspect traffic, block suspicious requests, and show the
-              results in a clear dashboard.
+
+            <p className="text-slate-600 leading-7">
+              Sentinel Guard is designed to inspect, detect, and respond to
+              malicious traffic patterns — not just display logs, but actively
+              protect your backend systems.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {features.map((feature) => (
-              <Card key={feature.title} className="rounded-[24px] border-slate-200 bg-white shadow-sm">
-                <CardContent className="space-y-4 p-7">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-950">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm leading-7 text-slate-600">{feature.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
+          {/* CARDS */}
+          <div className="grid md:grid-cols-3 gap-6">
+            
+            <Feature
+              icon={<ShieldCheck />}
+              title="Request Inspection"
+              desc="Deep inspection of headers, payloads, and behavioral patterns across incoming requests."
+            />
+
+            <Feature
+              icon={<Ban />}
+              title="Threat Blocking"
+              desc="Automatically block malicious traffic using rule-based filtering and detection logic."
+            />
+
+            <Feature
+              icon={<Activity />}
+              title="Live Monitoring"
+              desc="Observe traffic spikes, anomalies, and request flow in real-time dashboards."
+            />
           </div>
         </div>
       </section>
@@ -118,16 +155,35 @@ export default function Home() {
   );
 }
 
-function PreviewStat({ icon, label, value }) {
+function Feature({ icon, title, desc }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+    <div className="group relative rounded-[22px]  border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
+      {/* hover glow */}
+      <div className="absolute inset-0 rounded-[22px] opacity-0 group-hover:opacity-100 group-hover:bg-sky-100/50 transition bg-gradient-to-r from-sky-100/40 to-indigo-100/40" />
+
+      <div className="relative space-y-4 flex flex-col justify-center items-center h-full">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-sky-200 bg-sky-100 text-sky-700 group-hover:scale-110 duration-500 transition-all">
+          {icon}
+        </div>
+
+        <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
+
+        <p className="text-sm leading-7 text-slate-600 text-center">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+function Stat({ icon, label, value }) {
+  return (
+    <div className="rounded-xl border border-slate-200 p-4 bg-white">
+      <div className="flex gap-3 items-center">
+        <div className="h-10 w-10 flex items-center justify-center bg-slate-100 rounded-lg">
           {icon}
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.16em] text-slate-500">{label}</p>
-          <p className="mt-1 text-base font-semibold text-slate-900">{value}</p>
+          <p className="text-xs text-slate-500 uppercase">{label}</p>
+          <p className="font-semibold">{value}</p>
         </div>
       </div>
     </div>
