@@ -5,15 +5,14 @@ import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const router = useRouter();
-
   const [form, setForm] = useState({
-    floating_name: "",
-    floating_email: "",
-    floating_password: "",
-    repeat_password: "",
+    name: "",
+    email: "",
+    password: "",
+    website: "",
   });
-
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -23,33 +22,27 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (form.floating_password !== form.repeat_password) {
-      setError("Passwords do not match");
-      return;
-    }
+    setMessage("");
+    setLoading(true);
 
     try {
-      setLoading(true);
-
       const res = await fetch("/api/admin/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          floating_name: form.floating_name.trim(),
-          floating_email: form.floating_email.trim(),
-          floating_password: form.floating_password,
-        }),
+        body: JSON.stringify(form),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Something went wrong");
+        setError(data.error || "Unable to create account");
         return;
       }
 
-      router.push("/admin/login");
+      window.localStorage.setItem("sentinelApiKey", data.apiKey);
+      setMessage(`Account created. Your API key is saved for demo use: ${data.apiKey}`);
+      setTimeout(() => {
+        router.push("/admin/login");
+      }, 2500);
     } catch {
       setError("Server error. Please try again.");
     } finally {
@@ -58,112 +51,85 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-6">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm">
-        {/* Header */}
-        <div className="text-center mb-8 space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Create your <span className="text-accent">Admin</span> account
-          </h1>
-          <p className="text-sm text-muted">
-            Start securing your APIs with Sentinel Guard
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {error && (
-            <div className="rounded-lg bg-red-500/10 px-4 py-2 text-sm text-red-500">
-              {error}
-            </div>
-          )}
-
-          {/* Name */}
-          <div>
-            <label className="text-xs text-muted">Name</label>
-            <input
-              type="text"
-              name="floating_name"
-              value={form.floating_name}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
+    <div className="min-h-screen bg-slate-50 px-6 py-12">
+      <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center">
+        <div className="grid w-full gap-8 rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm lg:grid-cols-[1fr,0.95fr]">
+          <div className="space-y-5">
+            <h1 className="text-4xl font-semibold tracking-tight text-slate-950">
+              Create your account
+            </h1>
+            <p className="max-w-xl text-base leading-8 text-slate-600">
+              Add your website, create your login, and start tracking suspicious
+              traffic with Sentinel Guard.
+            </p>
           </div>
 
-          {/* Email */}
-          <div>
-            <label className="text-xs text-muted">Email address</label>
-            <input
-              type="email"
-              name="floating_email"
-              value={form.floating_email}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="text-xs text-muted">Password</label>
-            <input
-              type="password"
-              name="floating_password"
-              minLength={8}
-              value={form.floating_password}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-            <label className="text-xs text-muted">Confirm password</label>
-            <input
-              type="password"
-              name="repeat_password"
-              minLength={8}
-              value={form.repeat_password}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
-
-          {/* Terms */}
-          <div className="flex items-start gap-2 text-xs text-muted">
-            <input
-              type="checkbox"
-              required
-              className="mt-1 accent-[var(--accent)]"
-            />
-            <span>
-              I agree to the{" "}
-              <a href="/terms" className="text-accent hover:underline">
-                Terms & Conditions
-              </a>
-            </span>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-accent py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5 rounded-[24px] border border-slate-200 bg-slate-50 p-6"
           >
-            {loading ? "Creating account…" : "Create Account"}
-          </button>
+            {error && (
+              <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
 
-          {/* Footer */}
-          <p className="pt-2 text-center text-xs text-muted">
-            Already have an account?{" "}
-            <a href="/admin/login" className="text-accent hover:underline">
-              Sign in
-            </a>
-          </p>
-        </form>
+            {message && (
+              <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {message}
+              </div>
+            )}
+
+            <Input label="Name" name="name" value={form.name} onChange={handleChange} />
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            <Input
+              label="Website"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              placeholder="https://yourwebsite.com"
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-2xl bg-slate-900 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </button>
+          </form>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Input({ label, name, type = "text", value, onChange, placeholder }) {
+  return (
+    <div>
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required
+        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+      />
     </div>
   );
 }

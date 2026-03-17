@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -48,78 +47,66 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-6">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm">
-        {/* Header */}
-        <div className="text-center mb-8 space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back to{" "}
-            <span className="text-accent">Sentinel Guard</span>
-          </h1>
-          <p className="text-sm text-muted">
-            Log in to your admin account
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-50 px-6 py-12">
+      <div className="mx-auto flex min-h-[80vh] max-w-5xl items-center justify-center">
+        <div className="grid w-full gap-8 rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm lg:grid-cols-[1fr,0.9fr]">
+          <div className="space-y-5">
+            <h1 className="text-4xl font-semibold tracking-tight text-slate-950">
+              Login to your dashboard
+            </h1>
+            <p className="max-w-xl text-base leading-8 text-slate-600">
+              View traffic logs, blocked requests, and suspicious activity for
+              your website from one simple dashboard.
+            </p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {error && (
-            <div className="rounded-lg bg-red-500/10 px-4 py-2 text-sm text-red-500">
-              {error}
+          <form onSubmit={handleSubmit} className="space-y-5 rounded-[24px] border border-slate-200 bg-slate-50 p-6">
+            {error && (
+              <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label className="text-sm font-medium text-slate-700">Email</label>
+              <input
+                type="email"
+                name="floating_email"
+                value={form.floating_email}
+                onChange={handleChange}
+                required
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+              />
             </div>
-          )}
 
-          {/* Email */}
-          <div>
-            <label className="text-xs text-muted">Email address</label>
-            <input
-              type="email"
-              name="floating_email"
-              value={form.floating_email}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700">Password</label>
+              <input
+                type="password"
+                name="floating_password"
+                value={form.floating_password}
+                onChange={handleChange}
+                required
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+              />
+            </div>
 
-          {/* Password */}
-          <div>
-            <label className="text-xs text-muted">Password</label>
-            <input
-              type="password"
-              name="floating_password"
-              value={form.floating_password}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-            />
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-2xl bg-slate-900 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
 
-          {/* Remember me */}
-          <div className="flex items-center gap-2 text-xs text-muted">
-            <input
-              type="checkbox"
-              className="accent-[var(--accent)] cursor-pointer"
-            />
-            <span>Remember me</span>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-accent py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
-          >
-            {loading ? "Logging in…" : "Log In"}
-          </button>
-
-          {/* Footer */}
-          <p className="pt-2 text-center text-xs text-muted">
-            Don’t have an account?{" "}
-            <Link href="/admin/signup" className="text-accent hover:underline">
-              Create one
-            </Link>
-          </p>
-        </form>
+            <p className="text-center text-sm text-slate-500">
+              Don&apos;t have an account?{" "}
+              <a href="/admin/signup" className="font-medium text-slate-900 underline">
+                Sign up
+              </a>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

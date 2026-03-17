@@ -1,150 +1,134 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, Lock, Activity, Ban, Server } from "lucide-react";
+import { ShieldCheck, Activity, Ban, KeyRound, Globe, Radar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-/* ---------------- Home Page ---------------- */
+
+const features = [
+  {
+    icon: <ShieldCheck className="h-5 w-5" />,
+    title: "Protect your website traffic",
+    desc: "Sentinel Guard checks incoming requests before they reach your application.",
+  },
+  {
+    icon: <Ban className="h-5 w-5" />,
+    title: "Block suspicious requests",
+    desc: "Track abusive traffic and see which requests were blocked by your rules.",
+  },
+  {
+    icon: <Activity className="h-5 w-5" />,
+    title: "View activity clearly",
+    desc: "Use a simple dashboard to monitor request trends, logs, and threat signals.",
+  },
+];
+
 export default function Home() {
   return (
-    <div className="bg-background text-foreground">
-      
+    <main className="text-slate-900">
+      <section className="px-6 py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr,0.9fr] lg:items-center">
+          <div className="space-y-7">
+            <span className="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
+              Simple, professional website security
+            </span>
 
-      {/* ================= HERO ================= */}
-      <section className="pt-16 pb-16">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div>
-            <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight tracking-tight">
-              API Security,
-              <br />
-              Reimagined for Scale
-            </h1>
+            <div className="space-y-5">
+              <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
+                Watch your website traffic and stop suspicious requests early.
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-slate-600">
+                Sign up, add your website, get your API key, and monitor blocked
+                traffic, request history, and suspicious activity from one clean
+                dashboard.
+              </p>
+            </div>
 
-            <p className="mt-8 text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              <strong>Sentinel Guard</strong> is a modern, middleware-first API
-              security platform designed to protect your infrastructure at the
-              earliest possible point i.e — the request layer.
-            </p>
-
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/admin/signup"
+                className="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+              >
+                Create Account
+              </Link>
               <Link
                 href="/admin/login"
-                className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white hover:opacity-90"
+                className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                Open Admin Dashboard
+                Login
               </Link>
-              <a
-                href="#features"
-                className="rounded-lg border border-border px-6 py-3 text-sm hover:bg-accent/5"
-              >
-                Explore Platform Capabilities
-              </a>
             </div>
           </div>
 
-          {/* Snapshot Card */}
-          <Card className="shadow-lg">
-            <CardContent className="space-y-6">
-              <h3 className="text-lg font-semibold">
-                Real-time Traffic Snapshot
-              </h3>
-
-              <div className="grid grid-cols-3 gap-4">
-                <DemoStat icon={<Activity />} label="Total Requests" value="12,430" />
-                <DemoStat icon={<Server />} label="Allowed" value="11,982" />
-                <DemoStat icon={<Ban />} label="Blocked" value="448" />
+          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="space-y-5 rounded-[24px] border border-slate-200 bg-slate-50 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-500">Dashboard Preview</p>
+                  <h3 className="mt-1 text-2xl font-semibold text-slate-950">
+                    Website Security Overview
+                  </h3>
+                </div>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+                  Active
+                </span>
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                Representative metrics from Sentinel Guard analytics.
-                Production environments display live, continuously updated data.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* ================= FEATURES ================= */}
-      <section id="features" className="py-32 bg-card">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-6">
-            Built for Real-World API Threats
-          </h2>
-
-          <p className="text-lg text-muted-foreground max-w-3xl mb-16">
-            Modern APIs are exposed to constant automated attacks, abusive
-            traffic, and unauthorized access attempts. Sentinel Guard provides
-            a focused, performance-oriented security layer that operates where
-            it matters most — at the request boundary.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Feature
-              icon={<Lock />}
-              title="Middleware-Level API Firewall"
-              desc="Apply granular security rules directly within your request pipeline to block malicious IPs, routes, and methods before they reach your application logic."
-            />
-            <Feature
-              icon={<Activity />}
-              title="Intelligent Rate Limiting"
-              desc="Detect and prevent API abuse using adaptive per-IP rate limits that protect your services without impacting legitimate users."
-            />
-            <Feature
-              icon={<ShieldCheck />}
-              title="Automated Threat Detection"
-              desc="Continuously monitor traffic patterns to identify suspicious behavior and automatically neutralize threats in real time."
-            />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <PreviewStat icon={<Globe className="h-5 w-5" />} label="Website" value="myapp.com" />
+                <PreviewStat icon={<KeyRound className="h-5 w-5" />} label="API Key" value="Connected" />
+                <PreviewStat icon={<Activity className="h-5 w-5" />} label="Requests" value="12,430" />
+                <PreviewStat icon={<Radar className="h-5 w-5" />} label="Threats" value="14" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ================= SECURITY ================= */}
-      <section id="security" className="py-32 bg-background">
-        <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-8">
-            Why API-First Security Is Critical
-          </h2>
+      <section id="features" className="px-6 pb-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 max-w-3xl">
+            <h2 className="text-3xl font-semibold tracking-tight text-slate-950">
+              Everything is kept simple and easy to explain.
+            </h2>
+            <p className="mt-3 text-base leading-7 text-slate-600">
+              Sentinel Guard focuses on the basics that matter: identify your
+              website, inspect traffic, block suspicious requests, and show the
+              results in a clear dashboard.
+            </p>
+          </div>
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            APIs are now the primary interface between applications, services,
-            and users — making them the most valuable and vulnerable attack
-            surface in modern systems. Traditional perimeter-based security
-            models were never designed to handle today’s API-driven architectures.
-            <br /><br />
-            Sentinel Guard introduces a lightweight but powerful protection layer
-            that sits directly in front of your APIs, operating as a proactive
-            defense mechanism similar to an API gateway or Web Application
-            Firewall. By stopping malicious requests early, Sentinel Guard
-            reduces operational risk, protects sensitive data, and ensures
-            consistent service availability — even under sustained attack.
-          </p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {features.map((feature) => (
+              <Card key={feature.title} className="rounded-[24px] border-slate-200 bg-white shadow-sm">
+                <CardContent className="space-y-4 p-7">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-950">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-7 text-slate-600">{feature.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
 
-/* ---------------- Small UI Helpers ---------------- */
-function Feature({ icon, title, desc }) {
+function PreviewStat({ icon, label, value }) {
   return (
-    <Card className="hover:shadow-md transition">
-      <CardContent className="space-y-4">
-        <div className="text-2xl text-accent">{icon}</div>
-        <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          {desc}
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-function DemoStat({ icon, label, value }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="text-xl text-accent">{icon}</div>
-      <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-xl font-semibold">{value}</p>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-[0.16em] text-slate-500">{label}</p>
+          <p className="mt-1 text-base font-semibold text-slate-900">{value}</p>
+        </div>
       </div>
     </div>
   );

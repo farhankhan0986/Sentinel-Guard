@@ -1,21 +1,23 @@
-import { NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
-import Threat from '@/models/Threat';
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/db";
+import { resolveTenantFromApiKeyRequest } from "@/lib/auth/tenantScope";
+import Threat from "@/models/Threat";
 
 export async function GET(req) {
   await connectDB();
+  const tenant = await resolveTenantFromApiKeyRequest(req);
 
-  const ip = req.nextUrl.searchParams.get('ip');
+  if (!tenant) {
+    return NextResponse.json({ blocked: false }, { status: 401 });
+  }
+
+  const ip = req.nextUrl.searchParams.get("ip");
   if (!ip) {
     return NextResponse.json({ blocked: false });
   }
 
-  const threat = await Threat.findOne({ ip });
-
-  if (
-    threat?.blockedUntil &&
-    new Date(threat.blockedUntil) > new Date()
-  ) {
+  const threat = await Threat.findOne({ tenantId: tenant._id, ip });
+  if (threat?.blockedUntil && new Date(threat.blockedUntil) > new Date()) {
     return NextResponse.json({ blocked: true });
   }
 

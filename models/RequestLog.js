@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const RequestLogSchema = new mongoose.Schema(
   {
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tenant",
+      required: true,
+      index: true,
+    },
     ip: { type: String, required: true },
     method: { type: String, required: true },
     path: { type: String, required: true },

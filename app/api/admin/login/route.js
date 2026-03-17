@@ -25,22 +25,33 @@ export async function POST(req) {
       );
     }
 
-    const token = signToken({ adminId: admin._id });
+    const token = signToken({
+      adminId: admin._id,
+      tenantId: admin.tenantId?.toString(),
+    });
 
     const response = NextResponse.json(
-      { message: "Login successful" },
+      {
+        message: "Login successful",
+        admin: {
+          id: admin._id,
+          email: admin.email,
+          name: admin.name,
+          tenantId: admin.tenantId,
+        },
+      },
       { status: 200 },
     );
 
     response.cookies.set("token", token, {
       httpOnly: true,
-      sameSite: "lax", // ✅ IMPORTANT
-      secure: false, // ✅ HTTP allowed (local)
-      path: "/", // ✅ ALL ROUTES
-      maxAge: 60 * 60 * 24, // 1 day
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24,
     });
     return response;
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Login failed" }, { status: 500 });
   }
 }

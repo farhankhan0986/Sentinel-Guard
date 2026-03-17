@@ -1,99 +1,73 @@
-"use client";   
+"use client";
 
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-    // Don't show footer on admin pages
-    if (pathname.startsWith("/admin/login") || pathname.startsWith("/admin/signup")) {
-        return null;
-    }
+  if (pathname.startsWith("/admin/login") || pathname.startsWith("/admin/signup")) {
+    return null;
+  }
+
   return (
-    <footer className="border-t border-border bg-card text-foreground/70">
-      <div className="mx-auto max-w-7xl px-6 py-24">
-        {/* Top Section */}
-        <div className="grid gap-12 md:grid-cols-2">
-          {/* Brand + Description */}
-          <div className="space-y-5 max-w-xl">
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground">
-              Sentinel Guard
+    <footer className="border-t border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-10 lg:grid-cols-[1.5fr,1fr]">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Simple website security monitoring.
             </h2>
-            <p className="text-lg leading-relaxed text-muted">
-              Sentinel Guard is a modern, middleware-first API security platform
-              built to protect applications from abuse, automated attacks, and
-              unauthorized accesses — before threats ever reach your backend.
-            </p>
-            <p className="text-sm text-muted">
-              Designed for developers who care about security, performance, and
-              real-world reliability.
+            <p className="max-w-2xl text-sm leading-7 text-slate-600">
+              Create your account, add your website, connect your API key, and
+              track blocked requests, suspicious activity, and traffic history
+              from one clean dashboard.
             </p>
           </div>
 
-          {/* Footer Links */}
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
-            <FooterGroup title="Product">
-              <FooterLink>API Firewall</FooterLink>
-              <FooterLink>Rate Limiting</FooterLink>
-              <FooterLink>Attack Detection</FooterLink>
-              <FooterLink>Security Analytics</FooterLink>
-            </FooterGroup>
-
-            <FooterGroup title="Security">
-              <FooterLink>Threat Scoring</FooterLink>
-              <FooterLink>IP Blocking</FooterLink>
-              {/* <FooterLink>Audit Logs</FooterLink> */}
-              <FooterLink>Zero Trust Access</FooterLink>
-            </FooterGroup>
-
-            <FooterGroup title="Admin">
-              <FooterLink href="/admin/login">Admin Login</FooterLink>
-              <FooterLink>Dashboard</FooterLink>
-              <FooterLink>Rules Engine</FooterLink>
-            </FooterGroup>
+          <div className="grid grid-cols-2 gap-8 text-sm">
+            <FooterGroup
+              title="What You Get"
+              items={[
+                "Request logs",
+                "Threat tracking",
+                "Blocked IP insights",
+                "API key protection",
+              ]}
+            />
+            <FooterGroup
+              title="Use Case"
+              items={[
+                "Protect one website",
+                "See traffic patterns",
+                "Track suspicious requests",
+                "Manage your key",
+              ]}
+            />
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="my-16 h-px bg-border" />
-
-        {/* Bottom Section */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-muted">
-            © {new Date().getFullYear()} Sentinel Guard. All rights reserved.
-          </p>
-
-          <p className="text-sm text-muted">
-            Built for security-focused engineering teams
-          </p>
+        <div className="mt-12 flex flex-col gap-3 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Sentinel Guard</p>
+          <p>Professional security monitoring for modern web applications.</p>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ---------- Small Helper Components ---------- */
-
-function FooterGroup({ title, children }) {
+function FooterGroup({ title, items }) {
   return (
-    <div className="space-y-4">
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-foreground">
+    <div className="space-y-3">
+      <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
         {title}
       </h3>
-      <ul className="space-y-2">{children}</ul>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item} className="text-sm text-slate-600">
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
-  );
-}
-
-function FooterLink({ href = "#", children }) {
-  return (
-    <li>
-      <a
-        href={href}
-        className="text-sm text-muted hover:text-foreground transition-colors"
-      >
-        {children}
-      </a>
-    </li>
   );
 }

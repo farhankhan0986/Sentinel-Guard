@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const FirewallRuleSchema = new mongoose.Schema(
   {
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tenant",
+      required: true,
+      index: true,
+    },
     type: {
       type: String,
       enum: ['BLOCK_IP', 'BLOCK_METHOD', 'BLOCK_ROUTE'],
