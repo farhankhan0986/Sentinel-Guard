@@ -28,7 +28,7 @@ export async function GET(req) {
       $group: {
         _id: {
           $dateToString: {
-            format: "%Y-%m-%d %H:00",
+            format: "%Y-%m-%d %H:%M",
             date: "$createdAt",
           },
         },
