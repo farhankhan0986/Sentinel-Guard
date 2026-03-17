@@ -187,14 +187,27 @@ export default function AdminDashboard() {
 
     try {
       window.localStorage.setItem("sentinelApiKey", apiKeyInput.trim());
-      const requests = Array.from({ length: 12 }, () => sendProtectedRequest());
-      const responses = await Promise.all(requests);
+      const responses = [];
+
+      for (let i = 0; i < 12; i += 1) {
+        const response = await sendProtectedRequest();
+        if (response) {
+          responses.push(response);
+        }
+
+        // Small delay keeps the demo readable and lets rate-limit responses appear clearly.
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+
       const blockedCount = responses.filter((res) => res?.status === 429).length;
+      const forbiddenCount = responses.filter((res) => res?.status === 403).length;
 
       setTrafficMessage(
         blockedCount > 0
           ? `Attack simulation finished. ${blockedCount} requests were rate-limited.`
-          : "Attack simulation finished. Refresh data loaded.",
+          : forbiddenCount > 0
+            ? `Attack simulation finished. ${forbiddenCount} requests were auto-blocked after suspicious activity.`
+            : "Attack simulation finished. Refresh data loaded.",
       );
 
       await loadDashboard();
@@ -327,10 +340,10 @@ export default function AdminDashboard() {
             </p>
 
             <div className="mt-5 overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-left text-slate-500">
+              <table className="w-full min-w-175 text-sm">
+                <thead className="text-left text-slate-500 uppercase">
                   <tr>
-                    <th className="pb-3 font-medium">IP</th>
+                    <th className="pb-3 whitespace-nowrap font-medium">IP</th>
                     <th className="pb-3 font-medium">Path</th>
                     <th className="pb-3 font-medium">Method</th>
                     <th className="pb-3 font-medium">Status</th>
@@ -340,7 +353,7 @@ export default function AdminDashboard() {
                 <tbody>
                   {recentLogs.map((log) => (
                     <tr key={log._id} className="border-t border-slate-100">
-                      <td className="py-3 font-mono text-slate-700">{log.ip}</td>
+                      <td className="py-3 font-mono whitespace-nowrap text-slate-700">{log.ip}</td>
                       <td className="py-3 text-slate-700">{log.path}</td>
                       <td className="py-3 text-slate-700">{log.method}</td>
                       <td className="py-3">

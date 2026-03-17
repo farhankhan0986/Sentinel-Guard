@@ -169,7 +169,7 @@ export async function proxy(request) {
     // Fail open on rule fetch issues.
   }
 
-  const rateResult = checkRateLimit(`${tenant.id}:${requestContext.ip}`);
+  const rateResult = await checkRateLimit(tenant.id, requestContext.ip);
   if (rateResult.limited) {
     await logRequest({
       ...requestContext,

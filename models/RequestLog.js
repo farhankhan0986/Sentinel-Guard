@@ -25,5 +25,7 @@ const RequestLogSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+RequestLogSchema.index({ tenantId: 1, ip: 1, createdAt: -1 });
+
 export default mongoose.models.RequestLog ||
   mongoose.model("RequestLog", RequestLogSchema);

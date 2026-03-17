@@ -28,7 +28,7 @@ export default function Home() {
       <section className="px-6 py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr,0.9fr] lg:items-center">
           <div className="space-y-7">
-            <span className="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
+            <span className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-slate-100">
               Simple, professional website security
             </span>
 
