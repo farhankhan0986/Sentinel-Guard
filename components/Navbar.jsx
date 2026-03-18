@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShieldCheck, Globe, LayoutDashboard } from "lucide-react";
+import { ShieldCheck, Globe, LayoutDashboard, PanelsTopLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -48,7 +48,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-slate-200/70 bg-sky-600/15 backdrop-blur-xl">
       {/* subtle top glow */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
 
@@ -57,7 +57,7 @@ export default function Navbar() {
 
         <Link href="/" className="flex items-center gap-3 group">
           {/* LOGO */}
-          <div className="relative group flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f172a] shadow-sm">
+          <div className="relative group flex h-10 w-10 items-center justify-center rounded-xl bg-white/90 shadow-sm">
             <Image
               src="/favicon.svg"
               alt="Sentinel Guard"
@@ -71,7 +71,7 @@ export default function Navbar() {
           </div>
 
           {/* TEXT */}
-          <span className="hidden sm:inline-block text-lg font-semibold tracking-tight text-slate-800">
+          <span className="hidden sm:inline-block text-lg font-semibold tracking-tight text-muted-900 group-hover:text-sky-700 transition">
             Sentinel Guard
           </span>
         </Link>
@@ -98,9 +98,9 @@ export default function Navbar() {
               {/* DASHBOARD */}
               <Link
                 href="/admin/dashboard"
-                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition"
+                className="inline-flex items-center gap-2 rounded-full  bg-sky-600  px-4 py-2 text-sm font-medium text-white hover:bg-sky-500 transition shadow-sm"
               >
-                <LayoutDashboard className="h-4 w-4" />
+                <PanelsTopLeft className="h-4 w-4" />
                 Dashboard
               </Link>
 
@@ -116,7 +116,7 @@ export default function Navbar() {
             <>
               <Link
                 href="/admin/login"
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                className="rounded-full border border-slate-200 bg-white/70 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
               >
                 Login
               </Link>

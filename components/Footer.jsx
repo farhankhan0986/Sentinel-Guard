@@ -13,7 +13,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative border-t border-slate-200 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+    <footer className="relative border-t border-slate-200  bg-sky-100 overflow-hidden">
 
       {/* subtle animated glow */}
       <div className="absolute inset-0 pointer-events-none opacity-30">
@@ -27,7 +27,7 @@ export default function Footer() {
           {/* LEFT */}
           <div className="space-y-6">
 
-            <div className="pill bg-sky-100 text-sky-700 w-fit">
+            <div className="pill pill-safe bg-sky-100 text-sky-700 w-fit">
               Security Middleware
             </div>
 
@@ -43,7 +43,7 @@ export default function Footer() {
             {/* indicators */}
             <div className="flex flex-wrap gap-3 pt-2">
               <span className="pill pill-safe">Monitoring Active</span>
-              <span className="pill pill-safe">API Secured</span>
+              <span className="pill pill-green">API Secured</span>
               <span className="pill pill-threat">Threats Blocked</span>
             </div>
 
@@ -107,7 +107,7 @@ function FooterGroup({ title, items }) {
         {items.map((item) => (
           <li
             key={item}
-            className="text-sm text-muted/80 hover:text-black transition"
+            className="text-sm text-muted/80 active:text-black hover:text-black transition"
           >
             {item}
           </li>

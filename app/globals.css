@@ -87,6 +87,11 @@ button {
   color: #dc2626;
 }
 
+.pill-green {
+  background: #def4e5;
+  color: #18d007;
+}
+
 .pill-safe {
   background: #ecfeff;
   color: #0891b2;

@@ -159,10 +159,10 @@ function Feature({ icon, title, desc }) {
   return (
     <div className="group relative rounded-[22px]  border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
       {/* hover glow */}
-      <div className="absolute inset-0 rounded-[22px] opacity-0 group-hover:opacity-100 group-hover:bg-sky-100/50 transition bg-gradient-to-r from-sky-100/40 to-indigo-100/40" />
+      <div className="absolute inset-0 rounded-[22px] opacity-0 group-hover:opacity-100 group-active:bg-sky-100/50 group-active:opacity-100 group-hover:bg-sky-100/50 transition bg-gradient-to-r from-sky-100/40 to-indigo-100/40" />
 
       <div className="relative space-y-4 flex flex-col justify-center items-center h-full">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-sky-200 bg-sky-100 text-sky-700 group-hover:scale-110 duration-500 transition-all">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-sky-200 bg-sky-100 text-sky-700 group-active:scale-110 group-hover:scale-110 duration-500 transition-all">
           {icon}
         </div>
 
