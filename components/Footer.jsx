@@ -99,7 +99,7 @@ export default function Footer() {
 
 function FooterGroup({ title, items }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 select-none">
       <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">
         {title}
       </h3>

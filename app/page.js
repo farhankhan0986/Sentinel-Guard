@@ -129,7 +129,7 @@ export default function Home() {
           </div>
 
           {/* CARDS */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 select-none">
             
             <Feature
               icon={<ShieldCheck />}
@@ -146,7 +146,7 @@ export default function Home() {
             <Feature
               icon={<Activity />}
               title="Live Monitoring"
-              desc="Observe traffic spikes, anomalies, and request flow in real-time dashboards."
+              desc="Real-time visibility into traffic patterns, blocked threats, and overall API health status."
             />
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function Home() {
 
 function Feature({ icon, title, desc }) {
   return (
-    <div className="group relative rounded-[22px]  border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
+    <div className="group relative rounded-[22px]  border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition select-none">
       {/* hover glow */}
       <div className="absolute inset-0 rounded-[22px] opacity-0 group-hover:opacity-100 group-active:bg-sky-100/50 group-active:opacity-100 group-hover:bg-sky-100/50 transition bg-gradient-to-r from-sky-100/40 to-indigo-100/40" />
 

@@ -33,6 +33,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [admin, setAdmin] = useState(null);
   const [tenant, setTenant] = useState(null);
+  const [spinLoad, setSpinLoad] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     allowed: 0,
@@ -47,6 +48,8 @@ export default function AdminDashboard() {
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [trafficMessage, setTrafficMessage] = useState("");
   const [trafficLoading, setTrafficLoading] = useState(false);
+  const [attackLoading, setAttackLoading] = useState(false);
+  const [sendingTraffic, setSendingTraffic] = useState(false);
 
   const fetchWithAuth = useCallback(async (url) => {
     const res = await fetch(url, {
@@ -64,6 +67,8 @@ export default function AdminDashboard() {
   }, []);
 
   const loadDashboard = useCallback(async () => {
+    setSpinLoad(true);
+    const start = Date.now();
     const [trafficRes, blocksRes, ipsRes, recentLogsRes, threatRes] =
       await Promise.all([
         fetchWithAuth("/api/analytics/traffic"),
@@ -96,6 +101,12 @@ export default function AdminDashboard() {
       allowed: total - blocked,
       activeThreats: threatsData.activeThreats || 0,
     });
+
+    const elapsed = Date.now() - start;
+    const delay = Math.max(0, 600 - elapsed);
+    await new Promise((res) => setTimeout(res, delay));
+
+    setSpinLoad(false);
   }, [fetchWithAuth]);
 
   useEffect(() => {
@@ -157,6 +168,7 @@ export default function AdminDashboard() {
   const runSingleTraffic = async () => {
     setTrafficLoading(true);
     setTrafficMessage("");
+    setSendingTraffic(true);
 
     try {
       window.localStorage.setItem("sentinelApiKey", apiKeyInput.trim());
@@ -178,12 +190,14 @@ export default function AdminDashboard() {
       setTrafficMessage("Unable to send test request.");
     } finally {
       setTrafficLoading(false);
+      setSendingTraffic(false);
     }
   };
 
   const runAttackTraffic = async () => {
     setTrafficLoading(true);
     setTrafficMessage("");
+    setAttackLoading(true);
 
     try {
       window.localStorage.setItem("sentinelApiKey", apiKeyInput.trim());
@@ -219,6 +233,7 @@ export default function AdminDashboard() {
       setTrafficMessage("Unable to simulate attack traffic.");
     } finally {
       setTrafficLoading(false);
+      setAttackLoading(false);
     }
   };
 
@@ -226,21 +241,22 @@ export default function AdminDashboard() {
     return (
       <div className="space-y-8 animate-pulse">
         {/* HEADER */}
-        <section className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8">
+        <section className="w-full max-w-full overflow-x-hidden rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8">
           <div className="grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
             <div className="space-y-3">
-              <div className="h-8 w-64 bg-slate-200 rounded-lg" />
-              <div className="h-4 w-96 bg-slate-200 rounded" />
-              <div className="h-4 w-80 bg-slate-200 rounded" />
+              <div className="h-8 w-full max-w-xs bg-slate-200 rounded-lg" />
+              <div className="h-4 w-full max-w-md bg-slate-200 rounded" />
+              <div className="h-4 w-full max-w-sm bg-slate-200 rounded" />
             </div>
 
             <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-              <div className="flex items-start gap-3">
-                <div className="h-10 w-10 rounded-xl bg-slate-200" />
-                <div className="space-y-2 w-full">
-                  <div className="h-4 w-40 bg-slate-200 rounded" />
-                  <div className="h-3 w-32 bg-slate-200 rounded" />
-                  <div className="h-3 w-24 bg-slate-200 rounded" />
+              <div className="flex items-start gap-3 overflow-x-hidden">
+                <div className="h-10 w-10 rounded-xl bg-slate-200 shrink-0" />
+
+                <div className="space-y-2 w-full min-w-0">
+                  <div className="h-4 w-full max-w-[160px] bg-slate-200 rounded" />
+                  <div className="h-3 w-full max-w-[130px] bg-slate-200 rounded" />
+                  <div className="h-3 w-full max-w-[100px] bg-slate-200 rounded" />
                 </div>
               </div>
             </div>
@@ -577,10 +593,13 @@ export default function AdminDashboard() {
                 </div>
                 <button
                   onClick={loadDashboard}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-sky-600 px-4 py-3 text-sm font-medium text-white hover:bg-sky-500 transition"
+                  disabled={spinLoad}
+                  className="inline-flex items-center gap-2 rounded-2xl cursor-pointer bg-sky-600 px-4 py-3 text-sm font-medium text-white hover:bg-sky-500 transition"
                 >
-                  <RefreshCcw className="h-4 w-4" />
-                  Refresh
+                  <RefreshCcw
+                    className={`h-4 w-4 ${spinLoad ? "animate-spin" : ""}`}
+                  />
+                  {spinLoad ? "Refreshing..." : "Refresh Data"}
                 </button>
               </div>
 
@@ -593,7 +612,7 @@ export default function AdminDashboard() {
                   value={apiKeyInput}
                   onChange={(e) => setApiKeyInput(e.target.value)}
                   placeholder="Paste your API key here"
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+                  className="mt-2 w-full overflow-x-auto rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-400"
                 />
               </div>
 
@@ -604,15 +623,15 @@ export default function AdminDashboard() {
                   className="inline-flex items-center gap-2 rounded-2xl cursor-pointer bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
                 >
                   <Play className="h-4 w-4" />
-                  Send Test Request
+                  {sendingTraffic ? "Sending..." : "Send Test Request"}
                 </button>
                 <button
                   onClick={runAttackTraffic}
-                  disabled={trafficLoading}
+                  disabled={trafficLoading || attackLoading}
                   className="inline-flex items-center gap-2 rounded-2xl cursor-pointer bg-red-600 px-4 py-3 text-sm font-medium text-white hover:bg-red-500 transition"
                 >
                   <Zap className="h-4 w-4" />
-                  Simulate Attack
+                  {attackLoading ? "Attacking..." : "Simulate Attack"}
                 </button>
                 <button
                   onClick={rotateKey}
@@ -623,7 +642,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              <div className="rounded-2xl bg-slate-950 px-4 py-3 font-mono text-xs text-green-400 border border-slate-800">
+              <div className="rounded-2xl bg-slate-950 px-4 py-3 font-mono text-xs overflow-x-auto text-green-400 border border-slate-800">
                 {trafficMessage ||
                   apiKeyMessage ||
                   "Use these buttons to generate demo traffic quickly."}
