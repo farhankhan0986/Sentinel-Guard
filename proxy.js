@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { evaluateRule } from "@/lib/security/ruleEngine";
 import { checkRateLimit } from "@/lib/security/rateLimiter";
 
-export async function proxy(request) {
+export default async function proxy(request) {
   const { pathname, origin } = request.nextUrl;
   const internalPaths = [
     "/api/admin",
@@ -66,15 +66,17 @@ export async function proxy(request) {
   };
 
   const logRequest = async (payload) => {
-    try {
-      await fetch(`${origin}/api/logs`, {
-        method: "POST",
-        cache: "no-store",
-        headers: internalHeaders,
-        body: JSON.stringify(payload),
-      });
-    } catch (error) {
-      console.error("Logging failed:", error);
+    const res = await fetch(`${origin}/api/logs`, {
+      method: "POST",
+      cache: "no-store",
+      headers: internalHeaders,
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.error(
+        `[Sentinel] CRITICAL: Log write failed (${res.status}). Rate limiting may be impaired.`,
+        await res.text().catch(() => ""),
+      );
     }
   };
 
@@ -87,7 +89,7 @@ export async function proxy(request) {
         body: JSON.stringify(payload),
       });
     } catch (error) {
-      console.error("Threat update failed:", error);
+      console.error("[Sentinel] Threat update failed:", error);
     }
   };
 
@@ -169,14 +171,31 @@ export async function proxy(request) {
     // Fail open on rule fetch issues.
   }
 
+  // Bug #1 fix: write the log entry BEFORE calling checkRateLimit so
+  // the current request is counted in the window. A single log entry
+  // is written here for allowed requests; blocked paths above have
+  // already written their own "Blocked" entries.
+  try {
+    await logRequest({
+      ...requestContext,
+      status: "Allowed",
+      blocked: false,
+    });
+  } catch (error) {
+    console.error("[Sentinel] CRITICAL: Pre-rate-limit log write threw:", error);
+  }
+
   const rateResult = await checkRateLimit(tenant.id, requestContext.ip);
   if (rateResult.limited) {
+    // Overwrite the status in a separate blocked log so dashboards reflect
+    // the actual outcome, and update the threat score.
     await logRequest({
       ...requestContext,
       status: "Blocked",
       blocked: true,
       reason: "Rate limit exceeded",
-    });
+    }).catch((e) => console.error("[Sentinel] Rate-limit log write failed:", e));
+
     await updateThreat({
       ...requestContext,
       blocked: true,
@@ -199,17 +218,9 @@ export async function proxy(request) {
     );
   }
 
-  await logRequest({
-    ...requestContext,
-    status: "Allowed",
-    blocked: false,
-  });
-  await updateThreat({
-    ...requestContext,
-    blocked: false,
-    reason: "Allowed",
-    statusCode: 200,
-  });
+  // Bug #8 fix: do NOT call updateThreat for clean allowed requests —
+  // it was creating a Threat document for every visitor with a zero score.
+  // Threat scores are only updated on actual security events (above).
 
   const response = NextResponse.next();
   response.headers.set("x-sentinel-context", JSON.stringify(requestContext));

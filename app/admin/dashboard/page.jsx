@@ -59,6 +59,11 @@ export default function AdminDashboard() {
       },
     });
 
+    // 👇 handle auth error separately
+    if (res.status === 401) {
+      return null;
+    }
+
     if (!res.ok) {
       throw new Error("Request failed");
     }
@@ -113,6 +118,11 @@ export default function AdminDashboard() {
     const bootstrap = async () => {
       try {
         const meRes = await fetchWithAuth("/api/admin/me");
+
+        if (!meRes) {
+          router.replace("/admin/login");
+          return;
+        }
         setAdmin(meRes.admin);
 
         const tenantRes = await fetchWithAuth("/api/platform/tenants");

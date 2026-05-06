@@ -14,57 +14,57 @@ export async function POST(req) {
     }
 
     const { ip, blocked, reason, statusCode } = await req.json();
-    const analysis = analyzeThreat({
-      blocked,
-      reason,
-      statusCode,
-    });
+    const analysis = analyzeThreat({ blocked, reason, statusCode });
+
+    const isClean = analysis.threatDelta === 0 && !blocked;
+
+    if (isClean) {
+      await Threat.findOneAndUpdate(
+        { tenantId: tenant._id, ip },
+        {
+          $set: { threatScore: 0, lastDetectedAt: new Date() },
+        },
+        { upsert: false }
+      );
+      return NextResponse.json({ success: true });
+    }
 
     const update = {
-      $set: {
-        lastDetectedAt: new Date(),
-      },
-      $inc: {
-        threatScore: analysis.threatDelta,
-      },
+      $set: { lastDetectedAt: new Date() },
+      $inc: { threatScore: analysis.threatDelta },
     };
 
     if (analysis.reasons.length > 0) {
-      update.$push = {
-        reasons: {
-          $each: analysis.reasons,
-        },
-      };
+      update.$push = { reasons: { $each: analysis.reasons } };
     }
 
     const threat = await Threat.findOneAndUpdate(
       { tenantId: tenant._id, ip },
       update,
-      {
-        new: true,
-        upsert: true,
-        setDefaultsOnInsert: true,
-      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 
     if (threat.threatScore >= 10) {
-      await Threat.findByIdAndUpdate(threat._id, {
-        $set: {
-          blockedUntil: new Date(Date.now() + 15 * 60 * 1000),
-          lastDetectedAt: new Date(),
-        },
-        $push: {
-          reasons: "IP blocked due to high threat score",
-        },
-      });
+      const alreadyBlocked =
+        threat.blockedUntil && new Date(threat.blockedUntil) > new Date();
+
+      if (!alreadyBlocked) {
+        await Threat.findByIdAndUpdate(threat._id, {
+          $set: {
+            blockedUntil: new Date(Date.now() + 15 * 60 * 1000),
+            lastDetectedAt: new Date(),
+          },
+          $push: { reasons: "IP blocked due to high threat score" },
+        });
+      }
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: "Threat analysis failed" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

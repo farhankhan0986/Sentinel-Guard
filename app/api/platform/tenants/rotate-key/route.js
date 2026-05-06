@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
-import { generateTenantApiKey, hashTenantApiKey } from "@/lib/tenancy/apiKeys";
+import { generateTenantApiKey, hashTenantApiKey, invalidateApiKeyCache } from "@/lib/tenancy/apiKeys";
 import Tenant from "@/models/Tenant";
 
 export async function POST() {
@@ -19,6 +19,7 @@ export async function POST() {
 
   const apiKey = generateTenantApiKey();
   tenant.apiKeyHash = await hashTenantApiKey(apiKey);
+  invalidateApiKeyCache();
   await tenant.save();
 
   return NextResponse.json({

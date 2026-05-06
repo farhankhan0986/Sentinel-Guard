@@ -45,6 +45,7 @@ export default function Navbar() {
 
     setAdmin(null);
     router.push("/admin/login");
+    router.refresh();
   };
 
   return (
