@@ -1,15 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Activity,
   Ban,
+  Clock,
   Globe,
   KeyRound,
   Radar,
   ShieldAlert,
+  ShieldOff,
   Play,
   Zap,
   RefreshCcw,
@@ -44,12 +46,14 @@ export default function AdminDashboard() {
   const [blocks, setBlocks] = useState([]);
   const [topIps, setTopIps] = useState([]);
   const [recentLogs, setRecentLogs] = useState([]);
+  const [blockedIps, setBlockedIps] = useState([]);
   const [apiKeyMessage, setApiKeyMessage] = useState("");
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [trafficMessage, setTrafficMessage] = useState("");
   const [trafficLoading, setTrafficLoading] = useState(false);
   const [attackLoading, setAttackLoading] = useState(false);
   const [sendingTraffic, setSendingTraffic] = useState(false);
+  const countdownRef = useRef(null);
 
   const fetchWithAuth = useCallback(async (url) => {
     const res = await fetch(url, {
@@ -59,13 +63,13 @@ export default function AdminDashboard() {
       },
     });
 
-    // 👇 handle auth error separately
     if (res.status === 401) {
       return null;
     }
 
     if (!res.ok) {
-      throw new Error("Request failed");
+      console.warn(`[Dashboard] ${url} returned ${res.status}`);
+      return null;
     }
 
     return res.json();
@@ -74,13 +78,14 @@ export default function AdminDashboard() {
   const loadDashboard = useCallback(async () => {
     setSpinLoad(true);
     const start = Date.now();
-    const [trafficRes, blocksRes, ipsRes, recentLogsRes, threatRes] =
+    const [trafficRes, blocksRes, ipsRes, recentLogsRes, threatRes, blockedIpsRes] =
       await Promise.all([
         fetchWithAuth("/api/analytics/traffic"),
         fetchWithAuth("/api/analytics/blocks"),
         fetchWithAuth("/api/analytics/top-ips"),
         fetchWithAuth("/api/admin/logs/recent"),
         fetchWithAuth("/api/analytics/threats"),
+        fetchWithAuth("/api/analytics/blocked-ips"),
       ]);
 
     const trafficData = trafficRes.data || [];
@@ -106,6 +111,20 @@ export default function AdminDashboard() {
       allowed: total - blocked,
       activeThreats: threatsData.activeThreats || 0,
     });
+
+    const freshBlocked = (blockedIpsRes?.data || []).map((b) => ({ ...b }));
+    setBlockedIps(freshBlocked);
+
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    if (freshBlocked.length > 0) {
+      countdownRef.current = setInterval(() => {
+        setBlockedIps((prev) =>
+          prev
+            .map((b) => ({ ...b, remainingSeconds: b.remainingSeconds - 1 }))
+            .filter((b) => b.remainingSeconds > 0)
+        );
+      }, 1000);
+    }
 
     const elapsed = Date.now() - start;
     const delay = Math.max(0, 600 - elapsed);
@@ -522,18 +541,16 @@ export default function AdminDashboard() {
 
                       <td className="py-3">
                         <span
-                          className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                            log.status === "Blocked"
+                          className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${log.status === "Blocked"
                               ? "bg-red-100 text-red-600"
                               : "bg-emerald-100 text-emerald-600"
-                          }`}
+                            }`}
                         >
                           <span
-                            className={`h-1.5 w-1.5 rounded-full ${
-                              log.status === "Blocked"
+                            className={`h-1.5 w-1.5 rounded-full ${log.status === "Blocked"
                                 ? "bg-red-500"
                                 : "bg-emerald-500"
-                            }`}
+                              }`}
                           />
                           {log.status}
                         </span>
@@ -661,7 +678,107 @@ export default function AdminDashboard() {
           </Card>
         </div>
       </div>
+
+      <BlockedIpsPanel blockedIps={blockedIps} />
     </div>
+  );
+}
+
+function formatCountdown(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m ${String(s).padStart(2, "0")}s`;
+}
+
+function BlockedIpsPanel({ blockedIps }) {
+  return (
+    <section className="rounded-[24px] border border-red-100 bg-white shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between gap-4 border-b border-red-100 bg-red-50/50 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-100 text-red-600">
+            <ShieldOff className="h-4 w-4" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">Currently Blocked IPs</h3>
+            <p className="text-xs text-slate-500">Active threat-engine bans — auto-expire when timer reaches zero.</p>
+          </div>
+        </div>
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+            blockedIps.length > 0
+              ? "bg-red-100 text-red-600"
+              : "bg-emerald-100 text-emerald-600"
+          }`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              blockedIps.length > 0 ? "bg-red-500 animate-pulse" : "bg-emerald-500"
+            }`}
+          />
+          {blockedIps.length > 0 ? `${blockedIps.length} blocked` : "All clear"}
+        </span>
+      </div>
+
+      {blockedIps.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-2 py-10 text-slate-400">
+          <ShieldOff className="h-8 w-8 opacity-30" />
+          <p className="text-sm">No IPs are currently blocked.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead className="text-left text-xs uppercase tracking-wider text-slate-400 border-b border-slate-100">
+              <tr>
+                <th className="px-6 pb-3 pt-4">IP Address</th>
+                <th className="px-4 pb-3 pt-4">Threat Score</th>
+                <th className="px-4 pb-3 pt-4">Expires In</th>
+                <th className="px-4 pb-3 pt-4">Blocked Until</th>
+                <th className="px-6 pb-3 pt-4">Last Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blockedIps.map((b) => (
+                <tr
+                  key={b.ip}
+                  className="border-t border-slate-100 hover:bg-red-50/30 transition"
+                >
+                  <td className="px-6 py-3 font-mono font-medium text-slate-800">{b.ip}</td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        b.threatScore >= 20
+                          ? "bg-red-100 text-red-700"
+                          : b.threatScore >= 10
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {b.threatScore}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-red-600">
+                      <Clock className="h-3.5 w-3.5" />
+                      {formatCountdown(b.remainingSeconds)}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3 text-xs text-slate-500">
+                    {new Date(b.blockedUntil).toLocaleTimeString()}
+                  </td>
+
+                  <td className="px-6 py-3 text-xs text-slate-500 max-w-[220px] truncate">
+                    {b.reasons?.at(-1) || "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -695,13 +812,12 @@ function Kpi({ title, value, icon, tone = "neutral" }) {
           {/* mini status dot */}
           {tone !== "neutral" && (
             <span
-              className={`h-2 w-2 rounded-full ${
-                tone === "danger"
+              className={`h-2 w-2 rounded-full ${tone === "danger"
                   ? "bg-red-500"
                   : tone === "safe"
                     ? "bg-emerald-500"
                     : "bg-amber-500"
-              }`}
+                }`}
             />
           )}
         </div>

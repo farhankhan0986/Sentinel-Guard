@@ -18,7 +18,9 @@ export async function GET(req) {
 
   const threat = await Threat.findOne({ tenantId: tenant._id, ip });
   if (threat?.blockedUntil && new Date(threat.blockedUntil) > new Date()) {
-    return NextResponse.json({ blocked: true });
+    const blockedUntil = new Date(threat.blockedUntil);
+    const remainingSeconds = Math.ceil((blockedUntil - Date.now()) / 1000);
+    return NextResponse.json({ blocked: true, blockedUntil, remainingSeconds });
   }
 
   return NextResponse.json({ blocked: false });

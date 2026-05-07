@@ -107,6 +107,7 @@ export default async function proxy(request) {
     const threatData = await threatRes.json();
 
     if (threatData.blocked) {
+      const retryAfter = threatData.remainingSeconds ?? 900;
       await logRequest({
         ...requestContext,
         status: "Blocked",
@@ -121,8 +122,15 @@ export default async function proxy(request) {
       });
 
       return NextResponse.json(
-        { error: "IP temporarily blocked due to suspicious activity" },
-        { status: 403 },
+        {
+          error: "IP temporarily blocked due to suspicious activity",
+          retryAfter,
+          blockedUntil: threatData.blockedUntil,
+        },
+        {
+          status: 403,
+          headers: { "Retry-After": retryAfter.toString() },
+        },
       );
     }
   } catch {
