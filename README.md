@@ -1,11 +1,11 @@
-# Sentinel Guard 🛡️
+# Sentinel Guard 
 
 Sentinel Guard is a middleware-first API firewall and security layer built with Next.js.  
 It intercepts incoming requests, enforces security rules, detects attacks, and provides admin-level security insights.
 
 ---
 
-## 🚀 Features
+##  Features
 - Global API request interception (Edge Middleware)
 - Firewall rule engine (IP, method, route)
 - IP-based rate limiting
@@ -16,7 +16,7 @@ It intercepts incoming requests, enforces security rules, detects attacks, and p
 
 ---
 
-## 🧠 Architecture Overview
+##  Architecture Overview
 
 Client Request  
 → Next.js Middleware (Edge)  
@@ -29,7 +29,7 @@ Admin access is handled separately using JWT-protected APIs.
 
 ---
 
-## 🧱 Tech Stack
+##  Tech Stack
 - Next.js (App Router)
 - JavaScript (Node.js runtime)
 - MongoDB (Mongoose)
@@ -38,7 +38,7 @@ Admin access is handled separately using JWT-protected APIs.
 
 ---
 
-## 🔐 Security Design Decisions
+##  Security Design Decisions
 - No public admin signup (one-time provisioning)
 - Middleware-first request interception
 - Separation of public traffic security and admin control plane
@@ -46,7 +46,7 @@ Admin access is handled separately using JWT-protected APIs.
 
 ---
 
-## 🧪 Local Setup
+##  Local Setup
 
 ```bash
 npm install
