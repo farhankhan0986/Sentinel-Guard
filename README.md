@@ -19,7 +19,7 @@ It intercepts incoming requests, enforces security rules, detects attacks, and p
 ##  Architecture Overview
 
 Client Request  
-→ Next.js Middleware (Edge)  
+→ Next.js Middleware (Edge Function)  
 → Firewall Rules  
 → Rate Limiter  
 → API Route (Node.js)  
